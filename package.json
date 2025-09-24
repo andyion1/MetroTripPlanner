@@ -1,0 +1,15 @@
+{
+  "name": "a2-2025-metro-trip-planner",
+  "version": "1.0.0",
+  "description": "Trip on a STM metro line",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd server && node api.mjs",
+    "build": "cd metro-client && npm install && npm run build && cd ../server && npm install"
+  },
+  "keywords": [],
+  "author": "Maja Frydrychowicz, Jaya Nilakantan",
+  "license": "ISC",
+  "type": "module"
+}
