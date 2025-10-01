@@ -1,13 +1,12 @@
 import express from 'express';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-//Remove this test route
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get('/api/check', (req, res) => {
+  res.json({ status: 'ok' });
 });
 
 app.listen(port, () => {
-  console.log(`Example app app listening at http://localhost:${port}`);
+  console.log(`Server listening at http://localhost:${port}`);
 });
