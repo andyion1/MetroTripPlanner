@@ -17,10 +17,23 @@ function isRelevantStation(feature) {
   return url && ['1', '2', '4', '5'].includes(route);
 }
 
-app.get('/api/check', (req, res) => {
-  res.json({ status: 'ok' });
-});
+async function loadStationData() {
+  const filePath = path.join(__dirname, 'data', 'stations.geojson');
+  const data = await fs.readFile(filePath, 'utf-8');
+  const jsonData = JSON.parse(data);
+  stationData = jsonData.features.filter(isRelevantStation);
+}
 
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+loadStationData().then(() => {
+  app.get('/api/stations', (req, res) => {
+    res.json(stationData);
+  });
+
+  app.get('/api/check', (req, res) => {
+    res.json({ status: 'ok' });
+  });
+
+  app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`);
+  });
 });
