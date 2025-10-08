@@ -18,7 +18,7 @@ function isRelevantStation(feature) {
 }
 
 async function loadStationData() {
-  const filePath = path.join(__dirname, 'data', 'stations.geojson');
+  const filePath = path.join(__dirname, 'data', 'stm_arrets_sig.geojson');
   const data = await fs.readFile(filePath, 'utf-8');
   const jsonData = JSON.parse(data);
   stationData = jsonData.features.filter(isRelevantStation);
@@ -27,6 +27,14 @@ async function loadStationData() {
 loadStationData().then(() => {
   app.get('/api/stations', (req, res) => {
     res.json(stationData);
+  });
+
+
+  app.get('/api/line/:lineId', (req, res) => {
+    const { lineId } = req.params;
+
+    const stations = stationData.filter(f => f.properties.route_id === lineId);
+    res.json(stations);
   });
 
   app.get('/api/check', (req, res) => {
