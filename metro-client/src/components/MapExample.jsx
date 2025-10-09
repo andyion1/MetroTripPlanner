@@ -13,6 +13,7 @@ import './Map.css';
 export default function MapExample() {
   const [stations, setStations] = useState([]);
   const [startStation, setStartStation] = useState('');
+  const [endStation, setEndStation] = useState('');
 
   useEffect(() => {
     fetch('/api/stations')
