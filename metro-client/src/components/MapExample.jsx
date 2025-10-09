@@ -123,27 +123,54 @@ export default function MapExample() {
         )}
       </div>
 
-
       {startStation && endStation && (
-        <div className="map-wrapper">
-          <MapContainer
-            center={[45.5, -73.6]}
-            zoom={12}
-            zoomControl={true}
-            updateWhenZooming={false}
-            updateWhenIdle={true}
-            preferCanvas={true}
-            minZoom={10}
-            maxZoom={16}
-          >
-            <TileLayer
-              attribution={attribution}
-              url={tileUrl}
-            />
-            <MetroMarkers data={segment.length > 0 ? segment : stations} />
-          </MapContainer>
-        </div>
+        <>
+          {segment.length > 0 && (
+            <div className="chips-bar">
+              <p className="chips-line-label">
+                {(() => {
+                  const routeId = segment[0]?.properties?.route_id;
+                  const lineNames = { 1: 'Green', 2: 'Orange', 4: 'Yellow', 5: 'Blue' };
+                  const lineName = lineNames[routeId] || 'Metro';
+                  return `${lineName} Line: ${segment.length} stations`;
+                })()}
+              </p>
+              <div className="chips-row">
+                {segment.map((s) => {
+                  const lineColors = { 1: '#2ecc71', 2: '#f39c12', 4: '#f1c40f', 5: '#2980b9' };
+                  const bg = lineColors[s.properties.route_id] || '#555';
+                  return (
+                    <span
+                      key={s.properties.stop_id}
+                      className="station-chip"
+                      style={{ backgroundColor: bg }}
+                    >
+                      {s.properties.stop_name.replace(/^Station\s+/i, '')}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="map-wrapper">
+            <MapContainer
+              center={[45.5, -73.6]}
+              zoom={12}
+              zoomControl={true}
+              updateWhenZooming={false}
+              updateWhenIdle={true}
+              preferCanvas={true}
+              minZoom={10}
+              maxZoom={16}
+            >
+              <TileLayer attribution={attribution} url={tileUrl} />
+              <MetroMarkers data={segment.length > 0 ? segment : stations} />
+            </MapContainer>
+          </div>
+        </>
       )}
+
     </div>
   );
 }

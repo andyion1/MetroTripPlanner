@@ -51,7 +51,6 @@
   color: #222;
 }
 
-
 .map-wrapper {
   width: 95vw; 
   max-width: 1400px;
@@ -60,4 +59,31 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.chips-bar {
+  width: 95vw;
+  max-width: 1400px;
+  text-align: center;
+}
+
+.chips-line-label {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.station-chip {
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: black;
+  font-weight: 600;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
 }
