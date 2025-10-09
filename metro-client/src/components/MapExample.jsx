@@ -18,7 +18,7 @@ export default function MapExample() {
     fetch('/api/stations').then(res => res.json()).then(data => setStations(data));
   }, []);
 
-
+  // Get unique station names for dropdown
   const uniqueStationNames = Array.from(
     new Set(stations.map(station => station.properties.stop_name))
   );
@@ -29,6 +29,18 @@ export default function MapExample() {
 
   return (
     <div className="ui-container">
+      <div>
+        <label>Start Station: </label>
+        <select
+          value={startStation}
+          onChange={e => setStartStation(e.target.value)}
+        >
+          <option value="">Select a station</option>
+          {uniqueStationNames.map(name =>
+            <option key={name} value={name}>{name}</option>
+          )}
+        </select>
+      </div>
       <MapContainer
         center={[45.5, -73.6]}
         zoom={12}
