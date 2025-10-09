@@ -1,9 +1,9 @@
 import { 
   MapContainer, 
-  TileLayer
+  TileLayer,
+  Marker
 } from 'react-leaflet';
 import { useState, useEffect } from 'react';
-import MetroMarkers from './MetroMarkers';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
 
@@ -18,24 +18,6 @@ export default function MapExample() {
     fetch('/api/stations').then(res => res.json()).then(data => setStations(data));
   }, []);
 
-  // Temporary demo points for now
-  const points =  [ 
-    {
-      name: 'one',
-      coordinates: [45.446465999988021, -73.603118],
-      color: 'lime'
-    },
-    {
-      name: 'two',
-      coordinates: [45.501342315993, -73.60383900042255],
-      color: 'lime'
-    },
-    {
-      name: 'three',
-      coordinates: [45.520830163089066, -73.58006390089389],
-      color: 'lime'
-    },
-  ];
   const attribution = 
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -58,7 +40,15 @@ export default function MapExample() {
           attribution={attribution}
           url={tileUrl}
         />
-        <MetroMarkers route={points}/> 
+        {stations.map(station =>
+          <Marker
+            key={station.properties.stop_id}
+            position={[
+              station.geometry.coordinates[1],
+              station.geometry.coordinates[0]
+            ]}
+          />
+        )}
       </MapContainer>
     </div>
   );
