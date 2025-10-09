@@ -41,6 +41,15 @@ loadStationData().then(() => {
     res.json(stations);
   });
 
+
+  app.get('/api/between', (req, res) => {
+    const { lineId, start, end } = req.query;
+    if (!lineId || !start || !end) {
+      return res.status(400).json({ error: 'Missing lineId, start, or end' });
+    }
+    res.json({ lineId, start, end });
+  });
+
   app.get('/api/check', (req, res) => {
     res.json({ status: 'ok' });
   });
