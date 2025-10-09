@@ -85,6 +85,17 @@ export default function MapExample() {
     return <div className="loading-screen">Loading metro data...</div>;
   }
 
+  function getLineColor(routeId) {
+    const colors = { 1: '#2ecc71', 2: '#f39c12', 4: '#f1c40f', 5: '#2980b9' };
+    return colors[routeId] || '#555';
+  }
+
+  function getLineName(routeId) {
+    const names = { 1: 'Green', 2: 'Orange', 4: 'Yellow', 5: 'Blue' };
+    return names[routeId] || 'Metro';
+  }
+
+
 
   return (
     <div className="ui-container">
