@@ -1,5 +1,6 @@
 import { Icon } from 'leaflet';
 import { Marker, Polyline, Popup } from 'react-leaflet';
+import { useState, useEffect } from 'react';
 import markerImage from '../assets/marker-icon.png';
 
 const customIcon = new Icon({
@@ -7,6 +8,33 @@ const customIcon = new Icon({
   iconSize: [32, 32],
   iconAnchor: [16, 30],
 });
+
+function WikiSummary({ name }) {
+  const [summary, setSummary] = useState('Loading Wikipedia summary...');
+
+  useEffect(() => {
+    const cleaned = name.replace(/^Station\s+/i, '').trim();
+    const query = `${cleaned} station (Montreal Metro)`;
+    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.extract) {
+          setSummary(data.extract);
+        } else {
+          setSummary('No Wikipedia summary found.');
+        }
+      })
+      .catch(() => setSummary('Error loading summary.'));
+  }, [name]);
+
+  return (
+    <div style={{ maxWidth: 250 }}>
+      <strong>{name}</strong>
+      <p style={{ fontSize: '14px', color: '#444' }}>{summary}</p>
+    </div>
+  );
+}
+
 
 export default function MetroMarkers({ data }) {
   if (!data || data.length === 0) return null;
@@ -32,11 +60,9 @@ export default function MetroMarkers({ data }) {
           icon={customIcon}
         >
           <Popup>
-            <strong>{station.properties.stop_name}</strong>
-            <p style={{ margin: '6px 0 0 0', fontSize: '14px', color: '#555' }}>
-              Loading Wikipedia summary...
-            </p>
+            <WikiSummary name={station.properties.stop_name} />
           </Popup>
+
         </Marker>
       ))}
 
