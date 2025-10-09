@@ -124,23 +124,26 @@ export default function MapExample() {
       </div>
 
 
-      <MapContainer
-        center={[45.5, -73.6]}
-        zoom={12}
-        zoomControl={true}
-        updateWhenZooming={false}
-        updateWhenIdle={true}
-        preferCanvas={true}
-        minZoom={10}
-        maxZoom={16}
-      >
-        <TileLayer
-          attribution={attribution}
-          url={tileUrl}
-        />
-        <MetroMarkers data={segment.length > 0 ? segment : stations} />
-
-      </MapContainer>
+      {startStation && endStation && (
+        <div className="map-wrapper">
+          <MapContainer
+            center={[45.5, -73.6]}
+            zoom={12}
+            zoomControl={true}
+            updateWhenZooming={false}
+            updateWhenIdle={true}
+            preferCanvas={true}
+            minZoom={10}
+            maxZoom={16}
+          >
+            <TileLayer
+              attribution={attribution}
+              url={tileUrl}
+            />
+            <MetroMarkers data={segment.length > 0 ? segment : stations} />
+          </MapContainer>
+        </div>
+      )}
     </div>
   );
 }
