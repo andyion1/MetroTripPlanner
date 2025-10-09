@@ -11,21 +11,24 @@ import './Map.css';
 // further (optional)
 
 export default function MapExample() {
-
   const [stations, setStations] = useState([]);
+  const [startStation, setStartStation] = useState('');
 
   useEffect(() => {
     fetch('/api/stations').then(res => res.json()).then(data => setStations(data));
   }, []);
 
+
+  const uniqueStationNames = Array.from(
+    new Set(stations.map(station => station.properties.stop_name))
+  );
+
   const attribution = 
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-  
-  // TODO this is a demo of react-leaflet.  Feel free to modify the CSS.
+
   return (
     <div className="ui-container">
-      {/* See leaflet-container CSS class */}
       <MapContainer
         center={[45.5, -73.6]}
         zoom={12}
