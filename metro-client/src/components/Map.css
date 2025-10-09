@@ -54,12 +54,13 @@
 .map-wrapper {
   width: 95vw; 
   max-width: 1400px;
-  height: 100vh;
-  margin-top: 25px;
+  height: 70vh;
+  margin-top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 
 .chips-bar {
   width: 95vw;
