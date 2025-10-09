@@ -15,6 +15,7 @@ export default function MapExample() {
   const [startStation, setStartStation] = useState('');
   const [endStation, setEndStation] = useState('');
   const [lineStations, setLineStations] = useState([]);
+  const [segment, setSegment] = useState([]);
 
   useEffect(() => {
     if (!startStation) {
