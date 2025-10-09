@@ -1,3 +1,22 @@
+function getStationsOnLine(stations, lineId) {
+  return stations.filter(f => f.properties.route_id === lineId);
+}
+
+function getStationIndices(stations, start, end) {
+  const names = stations.map(f => f.properties.stop_name);
+  return {
+    startIndex: names.indexOf(start),
+    endIndex: names.indexOf(end)
+  };
+}
+
+function getStationsBetween(stations, startIndex, endIndex) {
+  if (startIndex <= endIndex) {
+    return stations.slice(startIndex, endIndex + 1);
+  } else {
+    return stations.slice(endIndex, startIndex + 1).reverse();
+  }
+}
 import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
@@ -51,17 +70,13 @@ loadStationData().then(() => {
       return res.status(400).json({ error: 'Invalid lineId' });
     }
 
-    const lineStations = stationData.filter(f => f.properties.route_id === lineId);
-    const names = lineStations.map(f => f.properties.stop_name);
-    const startIndex = names.indexOf(start);
-    const endIndex = names.indexOf(end);
-    if (startIndex === -1 || endIndex === -1) {
+    const lineStations = getStationsOnLine(stationData, lineId);
+    const { startIdx, endIdx } = getStationIndices(lineStations, start, end);
+    if (startIdx === -1 || endIdx === -1) {
       return res.status(404).json({ error: 'Start or end station not found on this line' });
     }
-    const slice = startIndex <= endIndex
-      ? lineStations.slice(startIndex, endIndex + 1)
-      : lineStations.slice(endIndex, startIndex + 1).reverse();
-    res.json(slice);
+    const segment = getStationsBetween(lineStations, startIdx, endIdx);
+    res.json(segment);
   });
 
   app.get('/api/check', (req, res) => {
