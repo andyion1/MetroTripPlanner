@@ -70,9 +70,15 @@ export default function MapExample() {
             onChange={e => setEndStation(e.target.value)}
           >
             <option value="">Select a station</option>
-            {uniqueStationNames.map(name =>
-              <option key={`${name}-end`} value={name}>{name}</option>
+            {lineStations.map(s =>
+              <option
+                key={`${s.properties.stop_id}-end`}
+                value={s.properties.stop_name}
+              >
+                {s.properties.stop_name}
+              </option>
             )}
+
           </select>
         </div>
       </div>
