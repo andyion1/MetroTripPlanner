@@ -58,9 +58,9 @@ export default function MapExample() {
           attribution={attribution}
           url={tileUrl}
         />
-        {stations.map(station =>
+        {stations.map((station, index) =>
           <Marker
-            key={station.properties.stop_id}
+            key={index}
             position={[
               station.geometry.coordinates[1],
               station.geometry.coordinates[0]
