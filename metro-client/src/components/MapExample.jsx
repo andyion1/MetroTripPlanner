@@ -17,6 +17,21 @@ export default function MapExample() {
   const [lineStations, setLineStations] = useState([]);
 
   useEffect(() => {
+    if (!startStation) {
+      setLineStations([]);
+      return;
+    }
+
+    const selected = stations.find(s => s.properties.stop_name === startStation);
+    if (!selected) return;
+
+    const lineId = selected.properties.route_id;
+
+    const sameLine = stations.filter(s => s.properties.route_id === lineId);
+    setLineStations(sameLine);
+  }, [startStation, stations]);
+
+  useEffect(() => {
     fetch('/api/stations')
       .then(res => res.json())
       .then(data => setStations(data))
