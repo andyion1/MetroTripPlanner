@@ -1,22 +1,3 @@
-function getStationsOnLine(stations, lineId) {
-  return stations.filter(f => f.properties.route_id === lineId);
-}
-
-function getStationIndices(stations, start, end) {
-  const names = stations.map(f => f.properties.stop_name);
-  return {
-    startIndex: names.indexOf(start),
-    endIndex: names.indexOf(end)
-  };
-}
-
-function getStationsBetween(stations, startIndex, endIndex) {
-  if (startIndex <= endIndex) {
-    return stations.slice(startIndex, endIndex + 1);
-  } else {
-    return stations.slice(endIndex, startIndex + 1).reverse();
-  }
-}
 import express from 'express';
 import fs from 'fs/promises';
 import path from 'path';
@@ -41,6 +22,26 @@ async function loadStationData() {
   const data = await fs.readFile(filePath, 'utf-8');
   const jsonData = JSON.parse(data);
   stationData = jsonData.features.filter(isRelevantStation);
+}
+
+function getStationsOnLine(stations, lineId) {
+  return stations.filter(f => f.properties.route_id === lineId);
+}
+
+function getStationIndices(stations, start, end) {
+  const names = stations.map(f => f.properties.stop_name);
+  return {
+    startIndex: names.indexOf(start),
+    endIndex: names.indexOf(end)
+  };
+}
+
+function getStationsBetween(stations, startIndex, endIndex) {
+  if (startIndex <= endIndex) {
+    return stations.slice(startIndex, endIndex + 1);
+  } else {
+    return stations.slice(endIndex, startIndex + 1).reverse();
+  }
 }
 
 loadStationData().then(() => {
