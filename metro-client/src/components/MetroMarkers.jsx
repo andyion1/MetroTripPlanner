@@ -33,6 +33,9 @@ export default function MetroMarkers({ data }) {
         >
           <Popup>
             <strong>{station.properties.stop_name}</strong>
+            <p style={{ margin: '6px 0 0 0', fontSize: '14px', color: '#555' }}>
+              Loading Wikipedia summary...
+            </p>
           </Popup>
         </Marker>
       ))}
