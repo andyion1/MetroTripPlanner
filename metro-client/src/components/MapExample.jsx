@@ -33,18 +33,34 @@ export default function MapExample() {
 
   return (
     <div className="ui-container">
-      <div>
-        <label>Start Station: </label>
-        <select
-          value={startStation}
-          onChange={e => setStartStation(e.target.value)}
-        >
-          <option value="">Select a station</option>
-          {uniqueStationNames.map(name =>
-            <option key={name} value={name}>{name}</option>
-          )}
-        </select>
+      <div className="ui-controls">
+        <div>
+          <label>Start Station: </label>
+          <select
+            value={startStation}
+            onChange={e => setStartStation(e.target.value)}
+          >
+            <option value="">Select a station</option>
+            {uniqueStationNames.map(name =>
+              <option key={name} value={name}>{name}</option>
+            )}
+          </select>
+        </div>
+
+        <div>
+          <label>End Station: </label>
+          <select
+            value={endStation}
+            onChange={e => setEndStation(e.target.value)}
+          >
+            <option value="">Select a station</option>
+            {uniqueStationNames.map(name =>
+              <option key={`${name}-end`} value={name}>{name}</option>
+            )}
+          </select>
+        </div>
       </div>
+
       <MapContainer
         center={[45.5, -73.6]}
         zoom={12}
