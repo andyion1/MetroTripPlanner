@@ -81,6 +81,11 @@ export default function MapExample() {
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
+  if (loading) {
+    return <div className="loading-screen">Loading metro data...</div>;
+  }
+
+
   return (
     <div className="ui-container">
       <div className="ui-controls">
