@@ -47,6 +47,9 @@ loadStationData().then(() => {
     if (!lineId || !start || !end) {
       return res.status(400).json({ error: 'Missing lineId, start, or end' });
     }
+    if (!['1', '2', '4', '5'].includes(lineId)) {
+      return res.status(400).json({ error: 'Invalid lineId' });
+    }
     res.json({ lineId, start, end });
   });
 
