@@ -39,3 +39,11 @@
   font-size: 14px;
   width: 100%;
 }
+
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 28px;  
+}
