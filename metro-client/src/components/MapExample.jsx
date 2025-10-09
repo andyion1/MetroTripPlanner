@@ -102,25 +102,27 @@ export default function MapExample() {
           </select>
         </div>
 
-        <div>
-          <label>End Station: </label>
-          <select
-            value={endStation}
-            onChange={e => setEndStation(e.target.value)}
-          >
-            <option value="">Select a station</option>
-            {lineStations.map(s =>
-              <option
-                key={`${s.properties.stop_id}-end`}
-                value={s.properties.stop_name}
-              >
-                {s.properties.stop_name}
-              </option>
-            )}
-
-          </select>
-        </div>
+        {startStation && (
+          <div>
+            <label>End Station: </label>
+            <select
+              value={endStation}
+              onChange={e => setEndStation(e.target.value)}
+            >
+              <option value="">Select a station</option>
+              {lineStations.map(s =>
+                <option
+                  key={`${s.properties.stop_id}-end`}
+                  value={s.properties.stop_name}
+                >
+                  {s.properties.stop_name}
+                </option>
+              )}
+            </select>
+          </div>
+        )}
       </div>
+
 
       <MapContainer
         center={[45.5, -73.6]}

@@ -7,15 +7,8 @@
   height: 100%;
   width: 100%;
   display: flex;
-}
-
-@media (orientation: portrait) {
-  .ui-container {
-    flex-direction: column;
-  }
-  .leaflet-container {
-    width: 100%;
-  }
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .ui-controls {
@@ -27,6 +20,9 @@
   background-color: #f9f9f9;
   border-right: 1px solid #ccc;
   width: 320px;
+  height: fit-content;
+  border-radius: 8px;
+  margin-right: 20px;
 }
 
 .ui-controls label {
@@ -35,7 +31,7 @@
 }
 
 .ui-controls select {
-  padding: 4px;
+  padding: 6px;
   font-size: 14px;
   width: 100%;
 }
@@ -44,6 +40,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  font-size: 28px;  
+  height: 100vh;
+  width: 100vw;
+  font-size: 28px;
+  font-weight: 600;
+  color: #222;
 }
