@@ -1,5 +1,5 @@
 import { Icon } from 'leaflet';
-import { Marker, Polyline } from 'react-leaflet';
+import { Marker, Polyline, Popup } from 'react-leaflet';
 import markerImage from '../assets/marker-icon.png';
 
 const customIcon = new Icon({
@@ -30,8 +30,13 @@ export default function MetroMarkers({ data }) {
             station.geometry.coordinates[0]
           ]}
           icon={customIcon}
-        />
+        >
+          <Popup>
+            <strong>{station.properties.stop_name}</strong>
+          </Popup>
+        </Marker>
       ))}
+
 
       {coordinates.length > 1 && (
         <Polyline positions={coordinates} pathOptions={{ color: lineColor, weight: 5 }} />
