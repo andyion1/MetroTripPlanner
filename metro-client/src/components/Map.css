@@ -2,8 +2,6 @@
   height: 600px;
   width: 100%;
   flex: 2;
-  border-radius: 8px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.15);
 }
 
 .ui-container {
@@ -55,18 +53,11 @@
 
 
 .map-wrapper {
-  width: 90%;
-  max-width: 900px;
-  height: 600px;
-  margin-top: 20px;
+  width: 95vw; 
+  max-width: 1400px;
+  height: 100vh;
+  margin-top: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.leaflet-container {
-  height: 100%;
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.15);
 }
