@@ -61,9 +61,16 @@ export default function MapExample() {
   useEffect(() => {
     fetch('/api/stations')
       .then(res => res.json())
-      .then(data => setStations(data))
-      .catch(err => console.error('Failed to load stations:', err));
+      .then(data => {
+        setStations(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to load stations:', err);
+        setLoading(false);
+      });
   }, []);
+
 
   // Get unique station names for dropdown
   const uniqueStationNames = Array.from(
