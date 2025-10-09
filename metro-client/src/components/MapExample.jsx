@@ -15,7 +15,10 @@ export default function MapExample() {
   const [startStation, setStartStation] = useState('');
 
   useEffect(() => {
-    fetch('/api/stations').then(res => res.json()).then(data => setStations(data));
+    fetch('/api/stations')
+      .then(res => res.json())
+      .then(data => setStations(data))
+      .catch(err => console.error('Failed to load stations:', err));
   }, []);
 
   // Get unique station names for dropdown
