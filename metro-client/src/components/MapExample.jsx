@@ -2,6 +2,7 @@ import {
   MapContainer, 
   TileLayer
 } from 'react-leaflet';
+import { useState, useEffect } from 'react';
 import MetroMarkers from './MetroMarkers';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
@@ -10,6 +11,14 @@ import './Map.css';
 // further (optional)
 
 export default function MapExample() {
+
+  const [stations, setStations] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/stations').then(res => res.json()).then(data => setStations(data));
+  }, []);
+
+  // Temporary demo points for now
   const points =  [ 
     {
       name: 'one',
