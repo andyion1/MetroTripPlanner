@@ -50,7 +50,18 @@ loadStationData().then(() => {
     if (!['1', '2', '4', '5'].includes(lineId)) {
       return res.status(400).json({ error: 'Invalid lineId' });
     }
-    res.json({ lineId, start, end });
+
+    const lineStations = stationData.filter(f => f.properties.route_id === lineId);
+    const names = lineStations.map(f => f.properties.stop_name);
+    const startIndex = names.indexOf(start);
+    const endIndex = names.indexOf(end);
+    if (startIndex === -1 || endIndex === -1) {
+      return res.status(404).json({ error: 'Start or end station not found on this line' });
+    }
+    const slice = startIndex <= endIndex
+      ? lineStations.slice(startIndex, endIndex + 1)
+      : lineStations.slice(endIndex, startIndex + 1).reverse();
+    res.json(slice);
   });
 
   app.get('/api/check', (req, res) => {
