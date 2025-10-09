@@ -52,12 +52,10 @@ loadStationData().then(() => {
 
   app.get('/api/line/:lineId', (req, res) => {
     const { lineId } = req.params;
-
     if (!['1', '2', '4', '5'].includes(lineId)) {
       return res.status(400).json({ error: 'Invalid metro line id' });
     }
-
-    const stations = stationData.filter(f => f.properties.route_id === lineId);
+    const stations = getStationsOnLine(stationData, lineId);
     res.json(stations);
   });
 
