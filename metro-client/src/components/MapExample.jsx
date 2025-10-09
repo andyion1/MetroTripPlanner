@@ -1,11 +1,11 @@
 import { 
   MapContainer, 
   TileLayer,
-  Marker
 } from 'react-leaflet';
 import { useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
+import MetroMarkers from './MetroMarkers';
 
 // See https://www.youtube.com/watch?v=jD6813wGdBA if you want to customize the map
 // further (optional)
@@ -16,6 +16,8 @@ export default function MapExample() {
   const [endStation, setEndStation] = useState('');
   const [lineStations, setLineStations] = useState([]);
   const [segment, setSegment] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   useEffect(() => {
     if (!startStation) {
@@ -122,15 +124,8 @@ export default function MapExample() {
           attribution={attribution}
           url={tileUrl}
         />
-        {(segment.length > 0 ? segment : stations).map((station, index) =>
-          <Marker
-            key={`${station.properties.stop_id}-${index}`}
-            position={[
-              station.geometry.coordinates[1],
-              station.geometry.coordinates[0]
-            ]}
-          />
-        )}
+        <MetroMarkers data={segment.length > 0 ? segment : stations} />
+
       </MapContainer>
     </div>
   );
