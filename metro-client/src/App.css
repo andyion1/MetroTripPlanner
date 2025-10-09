@@ -1,15 +1,32 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-.App {
-  font-family: sans-serif;
-  text-align: center;
+.app-top {
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
-#root {
-  height: 100vh;
+.app-header {
+  margin: 16px auto 8px;
+  padding: 16px 24px;
+  border: 2px solid #2e3fff; 
+  border-radius: 12px;
+  max-width: 680px;
+  text-align: center;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.app-subtitle {
+  margin: 6px 0 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
 }
