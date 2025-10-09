@@ -139,27 +139,18 @@ export default function MapExample() {
           {segment.length > 0 && (
             <div className="chips-bar">
               <p className="chips-line-label">
-                {(() => {
-                  const routeId = segment[0]?.properties?.route_id;
-                  const lineNames = { 1: 'Green', 2: 'Orange', 4: 'Yellow', 5: 'Blue' };
-                  const lineName = lineNames[routeId] || 'Metro';
-                  return `${lineName} Line: ${segment.length} stations`;
-                })()}
+                {getLineName(segment[0]?.properties?.route_id)} Line: {segment.length} stations
               </p>
               <div className="chips-row">
-                {segment.map((s) => {
-                  const lineColors = { 1: '#2ecc71', 2: '#f39c12', 4: '#f1c40f', 5: '#2980b9' };
-                  const bg = lineColors[s.properties.route_id] || '#555';
-                  return (
-                    <span
-                      key={s.properties.stop_id}
-                      className="station-chip"
-                      style={{ backgroundColor: bg }}
-                    >
-                      {s.properties.stop_name.replace(/^Station\s+/i, '')}
-                    </span>
-                  );
-                })}
+                {segment.map((s) => (
+                  <span
+                    key={s.properties.stop_id}
+                    className="station-chip"
+                    style={{ backgroundColor: getLineColor(s.properties.route_id) }}
+                  >
+                    {s.properties.stop_name.replace(/^Station\s+/i, '')}
+                  </span>
+                ))}
               </div>
             </div>
           )}
