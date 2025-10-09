@@ -44,8 +44,11 @@ export default function MapExample() {
     const lineId = selected.properties.route_id;
 
     // fetch stations between start and end
-    fetch(`/api/between?lineId=${lineId}&start=$
-    {encodeURIComponent(startStation)}&end=${encodeURIComponent(endStation)}`)
+    fetch(
+      `/api/between?lineId=${lineId}`
+      + `&start=${encodeURIComponent(startStation)}`
+      + `&end=${encodeURIComponent(endStation)}`
+    )
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setSegment(data);

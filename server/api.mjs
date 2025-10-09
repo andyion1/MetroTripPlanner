@@ -28,8 +28,9 @@ async function loadStationData() {
 }
 
 function getStationsOnLine(stations, lineId) {
-  return stations.filter(f => f.properties.route_id === lineId);
+  return stations.filter(f => String(f.properties.route_id) === String(lineId));
 }
+
 
 function getStationIndices(stations, start, end) {
   const names = stations.map(f => f.properties.stop_name);
@@ -65,6 +66,8 @@ loadStationData().then(() => {
 
   app.get('/api/between', (req, res) => {
     const { lineId, start, end } = req.query;
+    console.log('>>> /api/between called');
+    console.log('Query:', req.query);
     if (!lineId || !start || !end) {
       return res.status(400).json({ error: 'Missing lineId, start, or end' });
     }
@@ -73,11 +76,17 @@ loadStationData().then(() => {
     }
 
     const lineStations = getStationsOnLine(stationData, lineId);
-    const { startIdx, endIdx } = getStationIndices(lineStations, start, end);
-    if (startIdx === -1 || endIdx === -1) {
+
+    console.log('Stations on line:', lineStations.length);
+    console.log('First few:', lineStations.slice(0, 3).map(s => s.properties.stop_name));
+
+    const { startIndex, endIndex } = getStationIndices(lineStations, start, end);
+    console.log('Indices:', startIndex, endIndex);
+
+    if (startIndex === -1 || endIndex === -1) {
       return res.status(404).json({ error: 'Start or end station not found on this line' });
     }
-    const segment = getStationsBetween(lineStations, startIdx, endIdx);
+    const segment = getStationsBetween(lineStations, startIndex, endIndex);
     res.json(segment);
   });
 
