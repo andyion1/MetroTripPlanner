@@ -33,6 +33,27 @@ export default function MapExample() {
   }, [startStation, stations]);
 
   useEffect(() => {
+    if (!startStation || !endStation) {
+      setSegment([]);
+      return;
+    }
+
+    // find lineId from the start station
+    const selected = stations.find(s => s.properties.stop_name === startStation);
+    if (!selected) return;
+    const lineId = selected.properties.route_id;
+
+    // fetch stations between start and end
+    fetch(`/api/between?lineId=${lineId}&start=$
+    {encodeURIComponent(startStation)}&end=${encodeURIComponent(endStation)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setSegment(data);
+      })
+      .catch(err => console.error('Failed to fetch stations between:', err));
+  }, [startStation, endStation, stations]);
+
+  useEffect(() => {
     fetch('/api/stations')
       .then(res => res.json())
       .then(data => setStations(data))
