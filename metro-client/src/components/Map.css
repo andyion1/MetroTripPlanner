@@ -112,3 +112,10 @@
 .wiki-summary-link:hover {
   text-decoration: underline;
 }
+
+.leaflet-container {
+  height: 70vh;
+  width: 95vw;
+  border-radius: 10px;
+  z-index: 1;
+}
