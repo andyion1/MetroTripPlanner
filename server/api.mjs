@@ -82,7 +82,6 @@ loadStationData().then(() => {
 
     const { startIndex, endIndex } = getStationIndices(lineStations, start, end);
     console.log('Indices:', startIndex, endIndex);
-
     if (startIndex === -1 || endIndex === -1) {
       return res.status(404).json({ error: 'Start or end station not found on this line' });
     }
@@ -94,7 +93,19 @@ loadStationData().then(() => {
     res.json({ status: 'ok' });
   });
 
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
   });
+
+  function shutdown() {
+    console.debug('SIGTERM signal received: closing HTTP server')
+    server.close(() => {
+      console.debug('HTTP server closed')
+      process.exit(0);
+    });
+  }
+
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
+
 });
