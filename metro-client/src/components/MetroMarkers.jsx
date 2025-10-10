@@ -11,29 +11,62 @@ const customIcon = new Icon({
 
 function WikiSummary({ name }) {
   const [summary, setSummary] = useState('Loading Wikipedia summary...');
+  const [pageUrl, setPageUrl] = useState('');
 
   useEffect(() => {
-    const cleaned = name.replace(/^Station\s+/i, '').trim();
-    const query = `${cleaned} station (Montreal Metro)`;
-    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.extract) {
-          setSummary(data.extract);
+    const cleaned = name
+      .replace(/^Station\s+/i, '')
+      .replace(/\s+/g, '_') 
+      .replace(/-_/g, '-');
+
+    const query = `${cleaned}_Station`;
+
+    async function fetchWiki() {
+      try {
+        const url =
+          `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*` +
+          `&list=search&formatversion=2&srsearch=${encodeURIComponent(query)}`;
+
+        const res = await fetch(url, {
+          headers: { 'Api-User-Agent': 'andy.ionita@dawsoncollege.qc.ca' },
+        });
+
+        const data = await res.json();
+
+        const first = data?.query?.search?.[0];
+        if (first) {
+          setSummary(first.snippet.replace(/<\/?[^>]+(>|$)/g, '') + '…');
+          setPageUrl(`https://en.wikipedia.org/?curid=${first.pageid}`);
         } else {
           setSummary('No Wikipedia summary found.');
         }
-      })
-      .catch(() => setSummary('Error loading summary.'));
+      } catch (err) {
+        console.error(err);
+        setSummary('Error loading summary.');
+      }
+    }
+
+    fetchWiki();
   }, [name]);
 
   return (
     <div style={{ maxWidth: 250 }}>
       <strong>{name}</strong>
-      <p style={{ fontSize: '14px', color: '#444' }}>{summary}</p>
+      <p
+        style={{ fontSize: '14px', color: '#444' }}
+        dangerouslySetInnerHTML={{ __html: summary }}
+      />
+      {pageUrl && (
+        <p>
+          <a href={pageUrl} target="_blank" rel="noreferrer">
+            Read more on Wikipedia
+          </a>
+        </p>
+      )}
     </div>
   );
 }
+
 
 
 export default function MetroMarkers({ data }) {
