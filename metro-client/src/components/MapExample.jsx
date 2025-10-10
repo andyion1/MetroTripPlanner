@@ -8,7 +8,7 @@ import './Map.css';
 import MetroMarkers from './MetroMarkers';
 
 // See https://www.youtube.com/watch?v=jD6813wGdBA if you want to customize the map
-// further (optional)
+// further (optional) 
 
 export default function MapExample() {
   const [stations, setStations] = useState([]);
@@ -30,9 +30,12 @@ export default function MapExample() {
 
     const lineId = selected.properties.route_id;
 
-    const sameLine = stations.filter(s => s.properties.route_id === lineId);
-    setLineStations(sameLine);
+    fetch(`/api/line/${lineId}`)
+      .then(res => res.json())
+      .then(data => setLineStations(data))
+      .catch(err => console.error('Failed to fetch line stations:', err));
   }, [startStation, stations]);
+
 
   useEffect(() => {
     if (!startStation || !endStation) {
