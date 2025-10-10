@@ -155,6 +155,7 @@ export default function MapExample() {
             </div>
           )}
 
+
           <div className="map-wrapper">
             <MapContainer
               center={[45.5, -73.6]}

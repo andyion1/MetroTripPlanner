@@ -1,6 +1,6 @@
 import { Icon } from 'leaflet';
 import { Marker, Polyline, Popup } from 'react-leaflet';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import markerImage from '../assets/marker-icon.png';
 
 const customIcon = new Icon({
@@ -9,19 +9,33 @@ const customIcon = new Icon({
   iconAnchor: [16, 30],
 });
 
+
+const wikiCache = new Map();
+
 function WikiSummary({ name }) {
   const [summary, setSummary] = useState('Loading Wikipedia summary...');
   const [pageUrl, setPageUrl] = useState('');
+  const isFetched = useRef(false);
 
   useEffect(() => {
+    if (isFetched.current) return;
+    isFetched.current = true;
+
     const cleaned = name
       .replace(/^Station\s+/i, '')
-      .replace(/\s+/g, '_') 
+      .replace(/\s+/g, '_')
       .replace(/-_/g, '-');
 
     const query = `${cleaned}_Station`;
 
     async function fetchWiki() {
+      if (wikiCache.has(query)) {
+        const { summary, pageUrl } = wikiCache.get(query);
+        setSummary(summary);
+        setPageUrl(pageUrl);
+        return;
+      }
+
       try {
         const url =
           `https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*` +
@@ -30,15 +44,18 @@ function WikiSummary({ name }) {
         const res = await fetch(url, {
           headers: { 'Api-User-Agent': 'andy.ionita@dawsoncollege.qc.ca' },
         });
-
         const data = await res.json();
 
         const first = data?.query?.search?.[0];
         if (first) {
-          setSummary(first.snippet.replace(/<\/?[^>]+(>|$)/g, '') + '…');
-          setPageUrl(`https://en.wikipedia.org/?curid=${first.pageid}`);
+          const summaryText = first.snippet.replace(/<\/?[^>]+(>|$)/g, '') + '…';
+          const pageUrl = `https://en.wikipedia.org/?curid=${first.pageid}`;
+          setSummary(summaryText);
+          setPageUrl(pageUrl);
+          wikiCache.set(query, { summary: summaryText, pageUrl }); 
         } else {
           setSummary('No Wikipedia summary found.');
+          wikiCache.set(query, { summary: 'No Wikipedia summary found.', pageUrl: '' });
         }
       } catch (err) {
         console.error(err);
@@ -67,14 +84,12 @@ function WikiSummary({ name }) {
   );
 }
 
-
-
 export default function MetroMarkers({ data }) {
   if (!data || data.length === 0) return null;
 
   const coordinates = data.map(station => [
     station.geometry.coordinates[1],
-    station.geometry.coordinates[0]
+    station.geometry.coordinates[0],
   ]);
 
   const first = data[0];
@@ -88,17 +103,15 @@ export default function MetroMarkers({ data }) {
           key={`${station.properties.stop_id}-${index}`}
           position={[
             station.geometry.coordinates[1],
-            station.geometry.coordinates[0]
+            station.geometry.coordinates[0],
           ]}
           icon={customIcon}
         >
           <Popup>
             <WikiSummary name={station.properties.stop_name} />
           </Popup>
-
         </Marker>
       ))}
-
 
       {coordinates.length > 1 && (
         <Polyline positions={coordinates} pathOptions={{ color: lineColor, weight: 5 }} />
