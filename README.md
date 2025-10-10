@@ -9,48 +9,55 @@ It displays all stations between them on the line. It shows markers on a map and
 ![App Screenshot](./metro-client/screenshots/Screenshot_App.png)
 
 
-## Component Hierarchy
 - **App**
-  - Provides the overall page layout (title, header, and main content).
-  - Renders `MapExample`.
+  - Provides the overall page layout (title, header, and main content)
+  - Renders Header and `MapExample
+
+- **Header**
+  - Displays the app title and subtitle
+  - Serves as a consistent top banner for the app layout
 
 - **MapExample**
-  - Handles the main logic and UI:
+  - Handles the main metro trip planning logic and UI:
     - Fetches station data from the Express API
     - Manages state for selected start/end stations
-    - Displays dropdown menus and the chips bar
-    - Renders the Leaflet `MapContainer` with `TileLayer` and `MetroMarkers`
+    - Displays dropdown menus for selection
+    - Renders StationChips and the MetroMarkers map
+
+- **StationChips**
+  - Displays the line name and a horizontal list of stations between start and end
+  - Visually represents the metro line segment with color-coded chips
 
 - **MetroMarkers**
-  - Displays the metro stations as map markers and draws a polyline between them
-  - Contains the `WikiSummary` popup for each station
+  - Displays metro stations as map markers and draws a polyline connecting them
+  - Contains the WikiSummary popup for each marker
 
 - **WikiSummary**
   - Fetches and caches a short description of each station from the Wikipedia API
-  - Displays the name, snippet, and “Read more” link
+  - Displays the name, summary text, and a “Read more on Wikipedia” link
 
 
 ## Requirements
 
 - **Start and End Stations**
-    - Choosing a start station and an end station shows all stations between them on the same line.
-    - End station choices are limited to stations on the same line as the start.
+    - Choosing a start station and an end station shows all stations between them on the same line
+    - End station choices are limited to stations on the same line as the start
 
 - **Map Interactions**
-    - Metro stations are displayed as map markers.
-    - Clicking a marker highlights the station and fetches info from the Wikipedia API.
-    - Popup shows station details.
+    - Metro stations are displayed as map markers
+    - Clicking a marker highlights the station and fetches info from the Wikipedia API
+    - Popup shows station details
 
 - **Station Data**
-    - Uses STM geojson file as data source.
-    - Server reads the file once and caches it in memory.
-    - Data only includes relevant metro lines.
-    - On server start: read the file; if successful, server starts listening.
+    - Uses STM geojson file as data source
+    - Server reads the file once and caches it in memory
+    - Data only includes relevant metro lines
+    - On server start: read the file and if successful, server starts listening
 
 - **React UI**
     - Dropdown forms to select start and end stations.
     - Map component with markers, lines, and popups.
-    - When form data changes → update map and re-read updated data.
+    - When form data changes, then update map and re-read updated data.
     - UI must be usable on both desktop and mobile.
 
 - **Server Responsibilities**
