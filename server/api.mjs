@@ -98,9 +98,9 @@ loadStationData().then(() => {
   });
 
   function shutdown() {
-    console.debug('SIGTERM signal received: closing HTTP server')
+    console.debug('Signal received: closing HTTP server...');
     server.close(() => {
-      console.debug('HTTP server closed')
+      console.debug('HTTP server closed cleanly.');
       process.exit(0);
     });
   }
