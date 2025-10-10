@@ -2,13 +2,13 @@ import { Icon } from 'leaflet';
 import { Marker, Polyline, Popup } from 'react-leaflet';
 import { useState, useEffect, useRef } from 'react';
 import markerImage from '../assets/marker-icon.png';
+import './Map.css';
 
 const customIcon = new Icon({
   iconUrl: markerImage,
   iconSize: [32, 32],
   iconAnchor: [16, 30],
 });
-
 
 const wikiCache = new Map();
 
@@ -21,10 +21,7 @@ function WikiSummary({ name }) {
     if (isFetched.current) return;
     isFetched.current = true;
 
-    const cleaned = name
-      .replace(/^Station\s+/i, '')
-      .replace(/\s+/g, '_')
-      .replace(/-_/g, '-');
+    const cleaned = name.replace(/^Station\s+/i, '').replace(/\s+/g, '_').replace(/-_/g, '-');
 
     const query = `${cleaned}_Station`;
 
@@ -49,16 +46,15 @@ function WikiSummary({ name }) {
         const first = data?.query?.search?.[0];
         if (first) {
           const summaryText = first.snippet.replace(/<\/?[^>]+(>|$)/g, '') + '…';
-          const pageUrl = `https://en.wikipedia.org/?curid=${first.pageid}`;
+          const page = `https://en.wikipedia.org/?curid=${first.pageid}`;
           setSummary(summaryText);
-          setPageUrl(pageUrl);
-          wikiCache.set(query, { summary: summaryText, pageUrl }); 
+          setPageUrl(page);
+          wikiCache.set(query, { summary: summaryText, pageUrl: page });
         } else {
           setSummary('No Wikipedia summary found.');
           wikiCache.set(query, { summary: 'No Wikipedia summary found.', pageUrl: '' });
         }
-      } catch (err) {
-        console.error(err);
+      } catch {
         setSummary('Error loading summary.');
       }
     }
@@ -67,19 +63,16 @@ function WikiSummary({ name }) {
   }, [name]);
 
   return (
-    <div style={{ maxWidth: 250 }}>
+    <div className="wiki-summary">
       <strong>{name}</strong>
-      <p
-        style={{ fontSize: '14px', color: '#444' }}
-        dangerouslySetInnerHTML={{ __html: summary }}
-      />
-      {pageUrl && (
+      <p className="wiki-summary-text" dangerouslySetInnerHTML={{ __html: summary }} />
+      {pageUrl &&
         <p>
-          <a href={pageUrl} target="_blank" rel="noreferrer">
+          <a href={pageUrl} target="_blank" rel="noreferrer" className="wiki-summary-link">
             Read more on Wikipedia
           </a>
         </p>
-      )}
+      }
     </div>
   );
 }
@@ -98,7 +91,7 @@ export default function MetroMarkers({ data }) {
 
   return (
     <>
-      {data.map((station, index) => (
+      {data.map((station, index) =>
         <Marker
           key={`${station.properties.stop_id}-${index}`}
           position={[
@@ -111,11 +104,10 @@ export default function MetroMarkers({ data }) {
             <WikiSummary name={station.properties.stop_name} />
           </Popup>
         </Marker>
-      ))}
-
-      {coordinates.length > 1 && (
-        <Polyline positions={coordinates} pathOptions={{ color: lineColor, weight: 5 }} />
       )}
+      {coordinates.length > 1 &&
+        <Polyline positions={coordinates} pathOptions={{ color: lineColor, weight: 5 }} />
+      }
     </>
   );
 }

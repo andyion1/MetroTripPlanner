@@ -1,14 +1,8 @@
-import { 
-  MapContainer, 
-  TileLayer,
-} from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import { useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
 import MetroMarkers from './MetroMarkers';
-
-// See https://www.youtube.com/watch?v=jD6813wGdBA if you want to customize the map
-// further (optional) 
 
 export default function MapExample() {
   const [stations, setStations] = useState([]);
@@ -17,7 +11,6 @@ export default function MapExample() {
   const [lineStations, setLineStations] = useState([]);
   const [segment, setSegment] = useState([]);
   const [loading, setLoading] = useState(true);
-
 
   useEffect(() => {
     if (!startStation) {
@@ -30,17 +23,12 @@ export default function MapExample() {
 
     const lineId = selected.properties.route_id;
 
-    fetch(`/api/line/${lineId}`)
-      .then(res => res.json())
-      .then(data => {
-        setLineStations(data);
-        setEndStation(''); 
-        setSegment([]);
-      })
-      .catch(err => console.error('Failed to fetch line stations:', err));
+    fetch(`/api/line/${lineId}`).then(res => res.json()).then(data => {
+      setLineStations(data);
+      setEndStation('');
+      setSegment([]);
+    }).catch(err => console.error('Failed to fetch line stations:', err));
   }, [startStation, stations]);
-
-
 
   useEffect(() => {
     if (!startStation || !endStation) {
@@ -70,45 +58,32 @@ export default function MapExample() {
       `/api/between?lineId=${lineId}` +
         `&start=${encodeURIComponent(startStation)}` +
         `&end=${encodeURIComponent(endStation)}`
-    )
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) setSegment(data);
-      })
+    ).then(res => res.json()).then(data => {
+      if (Array.isArray(data)) setSegment(data);
+    })
       .catch(err => console.error('Failed to fetch stations between:', err));
   }, [startStation, endStation, stations]);
 
-
   useEffect(() => {
-    fetch('/api/stations')
-      .then(res => res.json())
-      .then(data => {
-        setStations(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to load stations:', err);
-        setLoading(false);
-      });
+    fetch('/api/stations').then(res => res.json()).then(data => {
+      setStations(data);
+      setLoading(false);
+    }).catch(err => {
+      console.error('Failed to load stations:', err);
+      setLoading(false);
+    });
   }, []);
 
-
-  // Get unique station names for dropdown
   const uniqueStationNames = Array.from(
     new Set(stations.map(station => station.properties.stop_name))
   );
 
-  const attribution = 
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+  const attribution =
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   if (loading) {
-    return <div className="loading-screen">Loading metro data...</div>;
-  }
-
-  function getLineColor(routeId) {
-    const colors = { 1: '#2ecc71', 2: '#f39c12', 4: '#f1c40f', 5: '#2980b9' };
-    return colors[routeId] || '#555';
+    return <div id="loading-view">Loading metro data...</div>;
   }
 
   function getLineName(routeId) {
@@ -116,28 +91,35 @@ export default function MapExample() {
     return names[routeId] || 'Metro';
   }
 
-
+  function getLineClass(routeId) {
+    const map = { 1: 'green-line', 2: 'orange-line', 4: 'yellow-line', 5: 'blue-line' };
+    return map[routeId] || 'default-line';
+  }
 
   return (
-    <div className="ui-container">
-      <div className="ui-controls">
-        <div>
-          <label>Start Station: </label>
+    <div id="map-ui">
+      <div id="controls-section">
+        <div className="control-group">
+          <label htmlFor="startSelect">Start Station:</label>
           <select
+            id="startSelect"
             value={startStation}
             onChange={e => setStartStation(e.target.value)}
           >
             <option value="">Select a station</option>
             {uniqueStationNames.map(name =>
-              <option key={name} value={name}>{name}</option>
+              <option key={name} value={name}>
+                {name}
+              </option>
             )}
           </select>
         </div>
 
-        {startStation && (
-          <div>
-            <label>End Station: </label>
+        {startStation &&
+          <div className="control-group">
+            <label htmlFor="endSelect">End Station:</label>
             <select
+              id="endSelect"
               value={endStation}
               onChange={e => setEndStation(e.target.value)}
             >
@@ -152,39 +134,36 @@ export default function MapExample() {
               )}
             </select>
           </div>
-        )}
+        }
       </div>
 
       {startStation && endStation && (
         <>
           {segment.length > 0 && (
-            <div className="chips-bar">
-              <p className="chips-line-label">
-                {getLineName(segment[0]?.properties?.route_id)} Line: {segment.length} stations
+            <div id="chips-container">
+              <p id="line-title">
+                {getLineName(segment[0]?.properties?.route_id)} Line – {segment.length} stations
               </p>
-              <div className="chips-row">
-                {segment.map((s) => (
+              <div id="chip-row">
+                {segment.map(s =>
                   <span
                     key={s.properties.stop_id}
-                    className="station-chip"
-                    style={{ backgroundColor: getLineColor(s.properties.route_id) }}
+                    className={`chip ${getLineClass(s.properties.route_id)}`}
                   >
                     {s.properties.stop_name.replace(/^Station\s+/i, '')}
                   </span>
-                ))}
+                )}
               </div>
             </div>
           )}
 
-
-          <div className="map-wrapper">
+          <div id="map-area">
             <MapContainer
               center={[45.5, -73.6]}
               zoom={12}
-              zoomControl={true}
-              updateWhenZooming={false}
-              updateWhenIdle={true}
-              preferCanvas={true}
+              zoomControl
+              updateWhenIdle
+              preferCanvas
               minZoom={10}
               maxZoom={16}
             >
@@ -194,7 +173,6 @@ export default function MapExample() {
           </div>
         </>
       )}
-
     </div>
   );
 }

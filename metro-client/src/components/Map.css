@@ -1,90 +1,114 @@
-.leaflet-container {
-  height: 600px;
-  width: 100%;
-  flex: 2;
-}
-
-.ui-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  gap: 20px;
-}
-
-
-.ui-controls {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 12px;
-  gap: 10px;
-  background-color: #f9f9f9;
-  border-right: 1px solid #ccc;
-  width: 320px;
-  height: fit-content;
-  border-radius: 8px;
-  margin-right: 20px;
-}
-
-.ui-controls label {
-  font-weight: bold;
-  margin-right: 6px;
-}
-
-.ui-controls select {
-  padding: 6px;
-  font-size: 14px;
-  width: 100%;
-}
-
-.loading-screen {
+#loading-view {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 600;
   color: #222;
 }
 
-.map-wrapper {
-  width: 95vw; 
-  max-width: 1400px;
-  height: 70vh;
-  margin-top: 10px;
+#map-ui {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
+#controls-section {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 320px;
+  margin-top: 10px;
+}
 
-.chips-bar {
-  width: 95vw;
-  max-width: 1400px;
+.control-group label {
+  font-weight: bold;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.control-group select {
+  width: 100%;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+#chips-container {
+  margin-top: 16px;
   text-align: center;
 }
 
-.chips-line-label {
+#line-title {
   font-weight: 700;
-  margin-bottom: 8px;
   font-size: 18px;
+  margin-bottom: 8px;
 }
 
-.chips-row {
+#chip-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
 }
 
-.station-chip {
+.chip {
   padding: 6px 10px;
   border-radius: 8px;
   color: black;
   font-weight: 600;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.green-line {
+  background-color: #2ecc71;
+}
+
+.orange-line {
+  background-color: #f39c12;
+}
+
+.yellow-line {
+  background-color: #f1c40f;
+}
+
+.blue-line {
+  background-color: #2980b9;
+}
+
+.default-line {
+  background-color: #555;
+}
+
+#map-area {
+  width: 95vw;
+  max-width: 1400px;
+  height: 70vh;
+  margin-top: 20px;
+}
+
+.wiki-summary {
+  max-width: 250px;
+}
+
+.wiki-summary-text {
+  font-size: 14px;
+  color: #444;
+}
+
+.wiki-summary-link {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.wiki-summary-link:hover {
+  text-decoration: underline;
 }
