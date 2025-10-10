@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
 import MetroMarkers from './MetroMarkers';
+import MapControls from './MapControls';
+import ChipsBar from './ChipsBar';
 
 export default function MapExample() {
-
   // Stores the full list of stations from the server
   const [stations, setStations] = useState([]);
 
@@ -22,8 +23,6 @@ export default function MapExample() {
   // Loading indicator while fetching data
   const [loading, setLoading] = useState(true);
 
-
-  // When the start station changes, find its line and fetch other stations on that same line
   useEffect(() => {
     if (!startStation) {
       setLineStations([]);
@@ -37,13 +36,11 @@ export default function MapExample() {
 
     fetch(`/api/line/${lineId}`).then(res => res.json()).then(data => {
       setLineStations(data);
-      // Reset end and segment when switching to another line
       setEndStation('');
       setSegment([]);
     }).catch(err => console.error('Failed to fetch line stations:', err));
   }, [startStation, stations]);
 
-  // When start or end station changes, fetch the segment between them
   useEffect(() => {
     if (!startStation || !endStation) {
       setSegment([]);
@@ -57,7 +54,6 @@ export default function MapExample() {
       s => s.properties.stop_name === endStation
     );
 
-    // Prevent fetching if they are not on the same metro line
     if (
       !startFeature ||
       !endFeature ||
@@ -88,7 +84,6 @@ export default function MapExample() {
     });
   }, []);
 
-  // Remove duplicates from station list for dropdown
   const uniqueStationNames = Array.from(
     new Set(stations.map(station => station.properties.stop_name))
   );
@@ -97,83 +92,39 @@ export default function MapExample() {
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-  // Show loading screen before stations data is available
   if (loading) {
     return <div id="loading-view">Loading metro data...</div>;
   }
 
-  // Converts metro line ID into its color name
   function getLineName(routeId) {
     const names = { 1: 'Green', 2: 'Orange', 4: 'Yellow', 5: 'Blue' };
     return names[routeId] || 'Metro';
   }
 
-  // Returns the CSS class used to color the chips for each line
   function getLineClass(routeId) {
     const map = { 1: 'green-line', 2: 'orange-line', 4: 'yellow-line', 5: 'blue-line' };
     return map[routeId] || 'default-line';
   }
 
-  // Main rendering
   return (
     <div id="map-ui">
-      <div id="controls-section">
-        <div className="control-group">
-          <label htmlFor="startSelect">Start Station:</label>
-          <select
-            id="startSelect"
-            value={startStation}
-            onChange={e => setStartStation(e.target.value)}
-          >
-            <option value="">Select a station</option>
-            {uniqueStationNames.map(name =>
-              <option key={name} value={name}>
-                {name}
-              </option>
-            )}
-          </select>
-        </div>
-
-        {startStation &&
-          <div className="control-group">
-            <label htmlFor="endSelect">End Station:</label>
-            <select
-              id="endSelect"
-              value={endStation}
-              onChange={e => setEndStation(e.target.value)}
-            >
-              <option value="">Select a station</option>
-              {lineStations.map(s =>
-                <option
-                  key={`${s.properties.stop_id}-end`}
-                  value={s.properties.stop_name}
-                >
-                  {s.properties.stop_name}
-                </option>
-              )}
-            </select>
-          </div>
-        }
-      </div>
+      <MapControls
+        startStation={startStation}
+        endStation={endStation}
+        uniqueStationNames={uniqueStationNames}
+        lineStations={lineStations}
+        setStartStation={setStartStation}
+        setEndStation={setEndStation}
+      />
 
       {startStation && endStation &&
         <>
           {segment.length > 0 &&
-            <div id="chips-container">
-              <p id="line-title">
-                {getLineName(segment[0]?.properties?.route_id)} Line – {segment.length} stations
-              </p>
-              <div id="chip-row">
-                {segment.map(s =>
-                  <span
-                    key={s.properties.stop_id}
-                    className={`chip ${getLineClass(s.properties.route_id)}`}
-                  >
-                    {s.properties.stop_name.replace(/^Station\s+/i, '')}
-                  </span>
-                )}
-              </div>
-            </div>
+            <ChipsBar
+              segment={segment}
+              getLineName={getLineName}
+              getLineClass={getLineClass}
+            />
           }
 
           <div id="map-area">
