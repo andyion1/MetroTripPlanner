@@ -1,9 +1,34 @@
-# Metro Trip Planner - Andy Ionita, 2333068
+# Metro Trip Planner (Andy Ionita)
 
 This web application helps users plan metro trips by selecting start and end stations.  
 It displays all stations between them on the line. It shows markers on a map and even provides Wikipedia info for each station. 
 
 ---
+
+## Screenshot
+![App Screenshot](./metro-client/screenshots/Screenshot_App.png)
+
+
+## Component Hierarchy
+- **App**
+  - Provides the overall page layout (title, header, and main content).
+  - Renders `MapExample`.
+
+- **MapExample**
+  - Handles the main logic and UI:
+    - Fetches station data from the Express API
+    - Manages state for selected start/end stations
+    - Displays dropdown menus and the chips bar
+    - Renders the Leaflet `MapContainer` with `TileLayer` and `MetroMarkers`
+
+- **MetroMarkers**
+  - Displays the metro stations as map markers and draws a polyline between them
+  - Contains the `WikiSummary` popup for each station
+
+- **WikiSummary**
+  - Fetches and caches a short description of each station from the Wikipedia API
+  - Displays the name, snippet, and “Read more” link
+
 
 ## Requirements
 
@@ -51,6 +76,7 @@ It displays all stations between them on the line. It shows markers on a map and
 
 ---
 
+
 ## APIs and Data
 
 - STM GeoJSON file will provide station and line data 
@@ -59,9 +85,17 @@ It displays all stations between them on the line. It shows markers on a map and
 
 ---
 
-## Attribution
 
-- STM Open Data (GeoJSON stations file)  
-- [Leaflet](https://leafletjs.com/) + [React Leaflet](https://react-leaflet.js.org/) for map display  
-- Wikipedia API for station details  
+## Attributions
 
+This project uses data and libraries from the following sources:
+
+- **STM (Société de transport de Montréal)** — GeoJSON data for Montréal metro stations provided through the STM open data portal.
+- **Leaflet** — Open-source JavaScript library for interactive maps.  
+  [Leaflet documentation](https://leafletjs.com/)
+- **React Leaflet** — React wrapper for Leaflet components, used to render the map, markers, and polylines. 
+  [React Leaflet documentation](https://react-leaflet.js.org/)
+- **Wikipedia API** — Used to fetch short summaries about each Montreal metro station
+- **OpenStreetMap** — Map tiles and geographic data displayed in the app  
+  [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright)
+- **Marker Icon** — Default Leaflet marker icon image given with the Leaflet package
