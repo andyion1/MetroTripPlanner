@@ -32,9 +32,14 @@ export default function MapExample() {
 
     fetch(`/api/line/${lineId}`)
       .then(res => res.json())
-      .then(data => setLineStations(data))
+      .then(data => {
+        setLineStations(data);
+        setEndStation(''); 
+        setSegment([]);
+      })
       .catch(err => console.error('Failed to fetch line stations:', err));
   }, [startStation, stations]);
+
 
 
   useEffect(() => {
@@ -43,16 +48,28 @@ export default function MapExample() {
       return;
     }
 
-    // find lineId from the start station
-    const selected = stations.find(s => s.properties.stop_name === startStation);
-    if (!selected) return;
-    const lineId = selected.properties.route_id;
+    const startFeature = stations.find(
+      s => s.properties.stop_name === startStation
+    );
+    const endFeature = stations.find(
+      s => s.properties.stop_name === endStation
+    );
 
-    // fetch stations between start and end
+    if (
+      !startFeature ||
+      !endFeature ||
+      startFeature.properties.route_id !== endFeature.properties.route_id
+    ) {
+      setSegment([]);
+      return;
+    }
+
+    const lineId = startFeature.properties.route_id;
+
     fetch(
-      `/api/between?lineId=${lineId}`
-      + `&start=${encodeURIComponent(startStation)}`
-      + `&end=${encodeURIComponent(endStation)}`
+      `/api/between?lineId=${lineId}` +
+        `&start=${encodeURIComponent(startStation)}` +
+        `&end=${encodeURIComponent(endStation)}`
     )
       .then(res => res.json())
       .then(data => {
@@ -60,6 +77,7 @@ export default function MapExample() {
       })
       .catch(err => console.error('Failed to fetch stations between:', err));
   }, [startStation, endStation, stations]);
+
 
   useEffect(() => {
     fetch('/api/stations')
