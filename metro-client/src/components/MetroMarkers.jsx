@@ -1,29 +1,46 @@
-import { Icon  } from 'leaflet';
-import { 
-  Marker,
-  Popup,
-  Polyline
-} from 'react-leaflet';
-
+import { Icon } from 'leaflet';
+import { Marker, Polyline, Popup } from 'react-leaflet';
 import markerImage from '../assets/marker-icon.png';
+import './Map.css';
+import WikiSummary from './WikiSummary';
 
 const customIcon = new Icon({
   iconUrl: markerImage,
-  iconSize: [38, 38],
-  iconAnchor: [22, 30]
+  iconSize: [32, 32],
+  iconAnchor: [16, 30],
 });
 
-export default function MetroMarkers({route}) {
-  const points = route.map(position => position.coordinates);
-  //beware, hardcoded!!!
+export default function MetroMarkers({ data }) {
+  if (!data || data.length === 0) return null;
+
+  const coordinates = data.map(station => [
+    station.geometry.coordinates[1],
+    station.geometry.coordinates[0],
+  ]);
+
+  const first = data[0];
+  const colors = { 1: 'green', 2: 'orange', 4: 'yellow', 5: 'blue' };
+  const lineColor = colors[first.properties.route_id] || '#555';
+
   return (
     <>
-      <Marker position={route[0].coordinates} icon={customIcon} >
-        <Popup><p>A point</p></Popup>
-      </Marker>
-      <Marker position={route[1].coordinates} icon={customIcon} />
-      <Marker position={route[2].coordinates} icon={customIcon} />
-      <Polyline pathOptions={{color: route[0].color}} positions={points} />
+      {data.map((station, index) =>
+        <Marker
+          key={`${station.properties.stop_id}-${index}`}
+          position={[
+            station.geometry.coordinates[1],
+            station.geometry.coordinates[0],
+          ]}
+          icon={customIcon}
+        >
+          <Popup>
+            <WikiSummary name={station.properties.stop_name} />
+          </Popup>
+        </Marker>
+      )}
+      {coordinates.length > 1 &&
+        <Polyline positions={coordinates} pathOptions={{ color: lineColor, weight: 5 }} />
+      }
     </>
   );
 }
